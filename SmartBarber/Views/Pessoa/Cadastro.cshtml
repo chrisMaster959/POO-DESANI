@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .div-form {
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      height: 100vh;
+      width: 100%;
+      background-color: aliceblue;
+
+      & form {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      height: 40%;
+      width: 20%;
+      background-color: antiquewhite;
+      border-radius: 1.5rem;
+
+        & btns {
+          display: flex;
+          gap: .5rem;
+        }
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="div-form">
+    <form action="login" method="post">
+      <div class="mb-3">
+        <label for="inputEmail" class="form-label">Email</label>
+        <input type="email" class="form-control" id="inputEmail" required>
+      </div>
+      <div class="mb-3">
+        <label for="inputPassword" class="form-label">Senha</label>
+        <input type="password" class="form-control" id="inputPassword" required>
+      </div>
+      <div class="btns">
+        <button type="submit" class="btn btn-light">Criar conta</button>
+      </div>
+    </form>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>
