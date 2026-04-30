@@ -1,5 +1,5 @@
---create database SmartBarber
---go
+create database SmartBarber
+go
 use SmartBarber
 ----------- CRIANDO TABELAS DO SISTEMA DE BARBEIROS  -----------
 
@@ -52,17 +52,13 @@ Create table Cabeleleiros
 	Logradouro			varchar(100)	not null,
 	Nr_Logradouro		varchar(10)		not null,
 	Bairro				varchar(100)	not null,
-	Cep					varchar(8)		not null,
-	Email				varchar(50)		not null unique,
-	Telefone			varchar(12)		not null unique,
+	Cep					varchar(8)		not null
 
 	-- Restrições
 
 	constraint pk_cod_pessoa_cabeleleiro primary key (Cod_Pessoa),
 	Constraint fk_cod_pessoa_cabeleleiro foreign key  (Cod_Pessoa) references Pessoas (Codigo),
-	Constraint fk_Cep		 foreign key  (Cep) references CEPs (Cep),
-	constraint fk_email_cabeleleiro foreign key (Email) references Pessoas (Email),
-	constraint fk_telefone_cabeleleiro foreign key (Telefone) references Pessoas (Telefone)
+	Constraint fk_Cep		 foreign key  (Cep) references CEPs (Cep)
 )
 GO
 -----------------------------------------------------------------

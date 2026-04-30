@@ -12,7 +12,8 @@ public class PessoaController : Controller
     public ActionResult Login()
     {
         // /Views/Pessoa/Login.cshtml
-        return View(db.Pessoa.ToList());
+        // return View(db.Pessoa.ToList());
+        return View();
     }
 
     [HttpGet]
@@ -22,10 +23,10 @@ public class PessoaController : Controller
     }
 
     // [HttpPost]
-    // public ActionResult Cadastro(Pessoa p)
-    // {
-    //     p.Codigo = Guid.NewGuid().ToString();
-    //     db.Pessoa.Add(p);
-    //     db.SaveChanges();
-    // }
+//     public ActionResult Cadastro(Pessoa p)
+//     {
+//         p.Codigo = Guid.NewGuid().ToString();
+//         db.Pessoa.Add(p);
+//         db.SaveChanges();
+//     }
 }

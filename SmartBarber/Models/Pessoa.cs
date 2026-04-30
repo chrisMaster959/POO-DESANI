@@ -1,13 +1,13 @@
 public class Pessoa
 {
-  public int Codigo {get; set;}
+  public int Id {get; set;}
   public string Nome {get; set;}
 
   public Pessoa() {}
 
-  public Pessoa(int codigo,string nome)
+  public Pessoa(int id,string nome)
   {
-    Codigo = codigo;
+    Id = id;
     Nome = nome;
   }
 }
