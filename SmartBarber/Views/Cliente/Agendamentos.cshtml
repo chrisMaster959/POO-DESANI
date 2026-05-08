@@ -1,0 +1,68 @@
+@model List<Barbeiro>
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendamento</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      background-color: gray;
+      font-family: Arial, sans-serif;
+    }
+    h1 {
+      display: flex;
+      justify-content: center;
+      font-size: 2rem;
+      text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+      color: white;
+    }
+    .container-barbeiros {
+      padding: 1rem;
+      margin-top: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+    }
+    .barbeiro-card {
+      background-color: rgba(128, 0, 128, 0.5);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+      color: white;
+      width: 300px;
+      text-align: center;
+    }
+    .barbeiro-card:hover {
+      background-color: rgba(128, 0, 128, 0.9);
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    }
+  </style>
+</head>
+<body>
+  <h1>Agendamento de @ViewBag.ServicoNome</h1>
+  <div class="container-barbeiros">
+    @if (Model.Any())
+    {
+      @foreach (var barbeiro in Model)
+      {
+        <div class="barbeiro-card">
+          <h3>@barbeiro.Nome</h3>
+          <p>@barbeiro.Logradouro, @barbeiro.Nr_Logradouro - @barbeiro.Bairro</p>
+          <!-- Add link to schedule if needed -->
+        </div>
+      }
+    }
+    else
+    {
+      <p>Nenhum barbeiro disponível para este serviço.</p>
+    }
+  </div>
+</body>
+</html>

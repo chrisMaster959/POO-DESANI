@@ -45,14 +45,18 @@
 </head>
 <body>
   <div class="div-form">
-    <form action="../cliente/servicos" method="post">
+    <form action="/pessoa/login" method="post">
+      @if (ViewBag.Erro != null)
+      {
+        <div class="alert alert-danger">@ViewBag.Erro</div>
+      }
       <div class="mb-3">
         <label for="inputEmail" class="form-label">Email</label>
-        <input type="email" class="form-control" id="inputEmail" required>
+        <input type="email" class="form-control" id="inputEmail" name="Email" required>
       </div>
       <div class="mb-3">
         <label for="inputPassword" class="form-label">Senha</label>
-        <input type="password" class="form-control" id="inputPassword" required>
+        <input type="password" class="form-control" id="inputPassword" name="Senha" required>
       </div>
       <div class="btns">
         <button type="submit" class="btn btn-primary">Fazer login</button>

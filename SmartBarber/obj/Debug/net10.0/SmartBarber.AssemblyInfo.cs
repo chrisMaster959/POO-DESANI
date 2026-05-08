@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SmartBarber")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c58216bae9155a7878b3ecd6617eb6d799ca1a16")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f5f371ddb94d7f4fa68bf768b7483d03a297f700")]
 [assembly: System.Reflection.AssemblyProductAttribute("SmartBarber")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SmartBarber")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
