@@ -58,8 +58,11 @@
   <div class="container-servicos">
     @foreach (var servico in Model)
     {
-      <a href="@Url.Action("Agendamento", "Cliente", new { id = servico.Id })">@servico.Nome</a>
+      <a href="@Url.Action("Agendamentos", "Cliente", new { id = servico.Id })">@servico.Nome</a>
     }
+  </div>
+  <div>
+    <a href="/barbeiro/cadastro">Sou barbeiro</a>
   </div>
 </body>
 </html>
