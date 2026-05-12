@@ -21,7 +21,11 @@ public class PessoaController : Controller
         var pessoa = db.Pessoa.FirstOrDefault(p => p.Email == Email && p.Senha == Senha);
         if (pessoa != null)
         {
-            return RedirectToAction("Servicos", "Servico");
+            HttpContext.Session.SetInt32("UsuarioId", pessoa.Id);
+            HttpContext.Session.SetString("UsuarioNome", pessoa.Nome);
+            HttpContext.Session.SetString("UsuarioEmail", pessoa.Email);
+            
+            return RedirectToAction("Atendimentos", "Atendimento");
         }
 
         ViewBag.Erro = "Email ou senha inválidos.";
@@ -35,14 +39,14 @@ public class PessoaController : Controller
     }
 
     [HttpPost]
-    public ActionResult Cadastro(Pessoa p)
+    public ActionResult Cadastro(Cliente c)
     {
         if (!ModelState.IsValid)
         {
-            return View(p);
+            return View(c);
         }
 
-        db.Pessoa.Add(p);
+        db.Cliente.Add(c);
         db.SaveChanges();
         return RedirectToAction("Login");
     }

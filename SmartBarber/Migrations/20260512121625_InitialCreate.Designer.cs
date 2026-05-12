@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace SmartBarber.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260512121625_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,6 +41,10 @@ namespace SmartBarber.Migrations
                     b.Property<DateTime>("DataHora")
                         .HasColumnType("datetime2");
 
+                    b.PrimitiveCollection<string>("ServicosIds")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -49,21 +56,6 @@ namespace SmartBarber.Migrations
                     b.HasIndex("ClienteId");
 
                     b.ToTable("Atendimento");
-                });
-
-            modelBuilder.Entity("AtendimentoServico", b =>
-                {
-                    b.Property<int>("AtendimentosId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ServicosId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AtendimentosId", "ServicosId");
-
-                    b.HasIndex("ServicosId");
-
-                    b.ToTable("AtendimentoServico");
                 });
 
             modelBuilder.Entity("BarbeiroServico", b =>
@@ -253,21 +245,6 @@ namespace SmartBarber.Migrations
                     b.Navigation("Barbeiro");
 
                     b.Navigation("Cliente");
-                });
-
-            modelBuilder.Entity("AtendimentoServico", b =>
-                {
-                    b.HasOne("Atendimento", null)
-                        .WithMany()
-                        .HasForeignKey("AtendimentosId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Servico", null)
-                        .WithMany()
-                        .HasForeignKey("ServicosId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("BarbeiroServico", b =>

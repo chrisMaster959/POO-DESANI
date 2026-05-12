@@ -15,22 +15,24 @@ public class BarbeiroController : Controller
     return View();
   }
 
-  [HttpPost]
+[HttpPost]
   public ActionResult Cadastro(Barbeiro b)
   {
     if (!ModelState.IsValid)
     {
-      return View(b);
+        return View(b);
     }
 
-    db.Pessoa.Add(b);
+    db.Barbeiro.Add(b);
+
     db.SaveChanges();
+
     return RedirectToAction("Controle");
   }
 
   public ActionResult Controle()
   {
-    var barbeiros = db.Pessoa.OfType<Barbeiro>().ToList();
+    var barbeiros = db.Barbeiro.ToList();
     return View(barbeiros);
   }
 

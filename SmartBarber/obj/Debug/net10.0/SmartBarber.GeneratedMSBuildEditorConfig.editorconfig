@@ -30,6 +30,10 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
+[C:/Users/jlral/Documents/FATEC/4º semestre/POO-DESANI/SmartBarber/Views/Atendimento/Atendimentos.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXRlbmRpbWVudG9cQXRlbmRpbWVudG9zLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/jlral/Documents/FATEC/4º semestre/POO-DESANI/SmartBarber/Views/Barbeiro/Cadastro.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmFyYmVpcm9cQ2FkYXN0cm8uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -38,20 +42,12 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmFyYmVpcm9cQ29udHJvbGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/jlral/Documents/FATEC/4º semestre/POO-DESANI/SmartBarber/Views/Barbeiro/Relatorio.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmFyYmVpcm9cUmVsYXRvcmlvLmNzaHRtbA==
+[C:/Users/jlral/Documents/FATEC/4º semestre/POO-DESANI/SmartBarber/Views/Cliente/Agendar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZVxBZ2VuZGFyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/jlral/Documents/FATEC/4º semestre/POO-DESANI/SmartBarber/Views/Cliente/Agenda.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZVxBZ2VuZGEuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/jlral/Documents/FATEC/4º semestre/POO-DESANI/SmartBarber/Views/Cliente/Agendamentos.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZVxBZ2VuZGFtZW50b3MuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/jlral/Documents/FATEC/4º semestre/POO-DESANI/SmartBarber/Views/Cliente/Barbeiro.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZVxCYXJiZWlyby5jc2h0bWw=
+[C:/Users/jlral/Documents/FATEC/4º semestre/POO-DESANI/SmartBarber/Views/Cliente/BarbeirosDisponiveis.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZVxCYXJiZWlyb3NEaXNwb25pdmVpcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/jlral/Documents/FATEC/4º semestre/POO-DESANI/SmartBarber/Views/Pessoa/Cadastro.cshtml]

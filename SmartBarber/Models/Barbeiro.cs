@@ -1,8 +1,12 @@
+using System.Collections.Generic;
+
 public class Barbeiro : Pessoa
 {
-    public string Logradouro { get; set; } = string.Empty;
+    public string? Logradouro { get; set; }
     public int Nr_Logradouro { get; set; }
-    public string Bairro { get; set; } = string.Empty;
-    public int cep { get; set; }
-    public List<int> ServicosIds { get; set; } = new List<int>();
+    public string? Bairro { get; set; }
+    public int? CepId { get; set; }
+    public Cep? Cep { get; set; }
+    public List<Servico> Servicos { get; set; }
+    public List<Atendimento> Atendimentos { get; set; } = new List<Atendimento>();
 }
