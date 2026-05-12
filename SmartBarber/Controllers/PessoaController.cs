@@ -24,6 +24,11 @@ public class PessoaController : Controller
             HttpContext.Session.SetInt32("UsuarioId", pessoa.Id);
             HttpContext.Session.SetString("UsuarioNome", pessoa.Nome);
             HttpContext.Session.SetString("UsuarioEmail", pessoa.Email);
+
+            if (pessoa is Barbeiro)
+            {
+               return RedirectToAction("Controle", "Barbeiro");
+            }
             
             return RedirectToAction("Atendimentos", "Atendimento");
         }

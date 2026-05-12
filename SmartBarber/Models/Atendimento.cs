@@ -10,7 +10,7 @@ public class Atendimento
     public int BarbeiroId { get; set; }
     public Cliente? Cliente { get; set; }
     public Barbeiro? Barbeiro { get; set; }
-    public List<Servico>? Servicos { get; set; }
+    public List<Servico> Servicos { get; set; } = new();
     public Atendimento() { }
 
     public Atendimento(int id, DateTime dataHora, string status, int clienteId, int barbeiroId)

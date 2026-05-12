@@ -13,7 +13,7 @@ public class Servico
     }
     public int CategoriaId { get; set; }
     public Categoria? Categoria { get; set; }
-    public List<Barbeiro> Barbeiros { get; set; }
+    public List<Barbeiro> Barbeiros { get; set; } = new();
     public List<Atendimento>? Atendimentos { get; set; }
 
     public Servico() { }
