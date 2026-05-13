@@ -5,20 +5,13 @@ public class Servico
     public int Id { get; set; }
     public int Codigo { get; set; }
     public string Nome { get; set; } = string.Empty;
-    public double Preco { get; set; }
-    public double Valor
-    {
-        get => Preco;
-        set => Preco = value;
-    }
-    public int CategoriaId { get; set; }
-    public Categoria? Categoria { get; set; }
+    public decimal Preco { get; set; }
     public List<Barbeiro> Barbeiros { get; set; } = new();
     public List<Atendimento>? Atendimentos { get; set; }
 
     public Servico() { }
 
-    public Servico(int id, string nome, double preco)
+    public Servico(int id, string nome, decimal preco)
     {
         Id = id;
         Nome = nome;

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace SmartBarber.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20260512125404_AtendimentoServico")]
-    partial class AtendimentoServico
+    [Migration("20260513133357_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,26 +82,6 @@ namespace SmartBarber.Migrations
                     b.HasIndex("ServicosId");
 
                     b.ToTable("BarbeiroServico");
-                });
-
-            modelBuilder.Entity("Categoria", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Codigo")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Descricao")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categoria");
                 });
 
             modelBuilder.Entity("Cep", b =>
@@ -188,9 +168,6 @@ namespace SmartBarber.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoriaId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Codigo")
                         .HasColumnType("int");
 
@@ -198,15 +175,10 @@ namespace SmartBarber.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Preco")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Valor")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Preco")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoriaId");
 
                     b.ToTable("Servico");
                 });
@@ -299,17 +271,6 @@ namespace SmartBarber.Migrations
                     b.Navigation("Cidade");
                 });
 
-            modelBuilder.Entity("Servico", b =>
-                {
-                    b.HasOne("Categoria", "Categoria")
-                        .WithMany("Servicos")
-                        .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Categoria");
-                });
-
             modelBuilder.Entity("Barbeiro", b =>
                 {
                     b.HasOne("Cep", "Cep")
@@ -332,11 +293,6 @@ namespace SmartBarber.Migrations
                         .HasForeignKey("Cliente", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Categoria", b =>
-                {
-                    b.Navigation("Servicos");
                 });
 
             modelBuilder.Entity("Cidade", b =>

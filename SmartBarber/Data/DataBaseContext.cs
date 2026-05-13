@@ -8,7 +8,6 @@ public class DatabaseContext : DbContext
   public DbSet<Barbeiro> Barbeiro { get; set; }
   public DbSet<Atendimento> Atendimento { get; set; }
   public DbSet<Servico> Servico { get; set; }
-  public DbSet<Categoria> Categoria { get; set; }
   public DbSet<Cep> Cep { get; set; }
   public DbSet<Cidade> Cidade { get; set; }
 

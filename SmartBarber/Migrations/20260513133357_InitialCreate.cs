@@ -12,20 +12,6 @@ namespace SmartBarber.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Categoria",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Codigo = table.Column<int>(type: "int", nullable: false),
-                    Descricao = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Categoria", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Cidade",
                 columns: table => new
                 {
@@ -63,19 +49,11 @@ namespace SmartBarber.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Codigo = table.Column<int>(type: "int", nullable: false),
                     Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Preco = table.Column<double>(type: "float", nullable: false),
-                    Valor = table.Column<double>(type: "float", nullable: false),
-                    CategoriaId = table.Column<int>(type: "int", nullable: false)
+                    Preco = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Servico", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Servico_Categoria_CategoriaId",
-                        column: x => x.CategoriaId,
-                        principalTable: "Categoria",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -151,8 +129,7 @@ namespace SmartBarber.Migrations
                     DataHora = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ClienteId = table.Column<int>(type: "int", nullable: false),
-                    BarbeiroId = table.Column<int>(type: "int", nullable: false),
-                    ServicosIds = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    BarbeiroId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -193,6 +170,30 @@ namespace SmartBarber.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "AtendimentoServico",
+                columns: table => new
+                {
+                    AtendimentosId = table.Column<int>(type: "int", nullable: false),
+                    ServicosId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AtendimentoServico", x => new { x.AtendimentosId, x.ServicosId });
+                    table.ForeignKey(
+                        name: "FK_AtendimentoServico_Atendimento_AtendimentosId",
+                        column: x => x.AtendimentosId,
+                        principalTable: "Atendimento",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AtendimentoServico_Servico_ServicosId",
+                        column: x => x.ServicosId,
+                        principalTable: "Servico",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Atendimento_BarbeiroId",
                 table: "Atendimento",
@@ -202,6 +203,11 @@ namespace SmartBarber.Migrations
                 name: "IX_Atendimento_ClienteId",
                 table: "Atendimento",
                 column: "ClienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AtendimentoServico_ServicosId",
+                table: "AtendimentoServico",
+                column: "ServicosId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Barbeiro_CepId",
@@ -217,39 +223,34 @@ namespace SmartBarber.Migrations
                 name: "IX_Cep_CidadeId",
                 table: "Cep",
                 column: "CidadeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Servico_CategoriaId",
-                table: "Servico",
-                column: "CategoriaId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Atendimento");
+                name: "AtendimentoServico");
 
             migrationBuilder.DropTable(
                 name: "BarbeiroServico");
 
             migrationBuilder.DropTable(
-                name: "Cliente");
+                name: "Atendimento");
+
+            migrationBuilder.DropTable(
+                name: "Servico");
 
             migrationBuilder.DropTable(
                 name: "Barbeiro");
 
             migrationBuilder.DropTable(
-                name: "Servico");
+                name: "Cliente");
 
             migrationBuilder.DropTable(
                 name: "Cep");
 
             migrationBuilder.DropTable(
                 name: "Pessoa");
-
-            migrationBuilder.DropTable(
-                name: "Categoria");
 
             migrationBuilder.DropTable(
                 name: "Cidade");

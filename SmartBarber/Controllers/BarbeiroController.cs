@@ -13,57 +13,65 @@ public class BarbeiroController : Controller
   [HttpGet]
   public ActionResult Cadastro()
   {
+    ViewBag.Ceps = db.Cep.ToList();
+
     return View();
   }
 
 [HttpPost]
-public ActionResult Cadastro(Barbeiro barbeiroForm)
+public IActionResult Cadastro(Barbeiro barbeiroForm)
 {
     var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
 
-    if(usuarioId == null)
+    if (usuarioId == null)
     {
         return RedirectToAction("Login", "Pessoa");
     }
 
     // verifica se já é barbeiro
     var barbeiroExiste = db.Barbeiro
-        .FirstOrDefault(b => b.Id == usuarioId);
+        .Any(b => b.Id == usuarioId);
 
-    if(barbeiroExiste != null)
+    if (barbeiroExiste)
     {
         return RedirectToAction("Controle");
     }
 
-    // busca os dados da pessoa
-    var pessoa = db.Pessoa
-        .FirstOrDefault(p => p.Id == usuarioId);
+    // verifica se pessoa existe
+    var pessoaExiste = db.Pessoa
+        .Any(p => p.Id == usuarioId);
 
-    if(pessoa == null)
+    if (!pessoaExiste)
     {
         return NotFound();
     }
 
-    // cria o barbeiro usando o MESMO ID da pessoa
-    var barbeiro = new Barbeiro
-    {
-        Id = pessoa.Id,
-        Nome = pessoa.Nome,
-        Email = pessoa.Email,
-        Senha = pessoa.Senha,
-        Telefone = pessoa.Telefone,
+    // INSERT SOMENTE na tabela derivada
+    db.Database.ExecuteSqlRaw(@"
+        INSERT INTO Barbeiro
+        (
+            Id,
+            Logradouro,
+            Nr_Logradouro,
+            Bairro,
+            CepId
+        )
+        VALUES
+        (
+            {0},
+            {1},
+            {2},
+            {3},
+            {4}
+        )
+    ",
+    usuarioId,
+    barbeiroForm.Logradouro,
+    barbeiroForm.Nr_Logradouro,
+    barbeiroForm.Bairro,
+    barbeiroForm.CepId);
 
-        Logradouro = barbeiroForm.Logradouro,
-        Nr_Logradouro = barbeiroForm.Nr_Logradouro,
-        Bairro = barbeiroForm.Bairro,
-        CepId = barbeiroForm.CepId
-    };
-
-    db.Barbeiro.Add(barbeiro);
-
-    db.SaveChanges();
-
-    return RedirectToAction("Controle");
+    return RedirectToAction("Escolha", "Servico");
 }
 
   public ActionResult Controle()
