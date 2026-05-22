@@ -14,22 +14,27 @@ public class ClienteController : Controller
   }
 
     public ActionResult BarbeirosDisponiveis(int id)
-  {
-      var servico = db.Servico
-          .FirstOrDefault(s => s.Id == id);
+{
+    var servico = db.Servico.FirstOrDefault(s => s.Id == id);
 
-      if (servico == null)
-          return NotFound();
+    if (servico == null)
+        return NotFound();
 
-      var barbeirosDisponiveis = db.Barbeiro
-        .Include(b => b.Servicos)
-        .Where(b =>b.Servicos != null && b.Servicos.Any(s => s.Id == id))
+    // CORREÇÃO: filtra via tabela de junção BarbeiroServico diretamente,
+    // evitando o erro de tradução LINQ com coleções de navegação
+    var barbeirosIds = db.Set<Dictionary<string, object>>("BarbeiroServico")
+        .Where(bs => (int)bs["ServicosId"] == id)
+        .Select(bs => (int)bs["BarbeirosId"])
         .ToList();
 
-      ViewBag.ServicoNome = servico.Nome;
+    var barbeirosDisponiveis = db.Barbeiro
+        .Where(b => barbeirosIds.Contains(b.Id))
+        .ToList();
 
-      return View("BarbeirosDisponiveis", barbeirosDisponiveis);
-  }
+    ViewBag.ServicoNome = servico.Nome;
+
+    return View("BarbeirosDisponiveis", barbeirosDisponiveis);
+}
 
   public ActionResult Agendar(int barbeiroId)
   {
