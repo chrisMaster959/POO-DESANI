@@ -83,52 +83,68 @@ public IActionResult Cadastro(Barbeiro barbeiroForm)
     return RedirectToAction("Escolha", "Servico");
 }
 
-  public ActionResult Controle()
+public ActionResult Controle(DateTime? dia)
 {
     var barbeiroId = HttpContext.Session.GetInt32("UsuarioId");
 
     if (barbeiroId == null)
-    {
         return RedirectToAction("Login", "Pessoa");
-    }
 
-    var hoje = DateTime.Today;
+    var diaSelecionado = dia?.Date ?? DateTime.Today;
 
-    // Busca o barbeiro logado
     var barbeiro = db.Barbeiro
-        .Include(b => b.Atendimentos)
-            .ThenInclude(a => a.Cliente)
         .Include(b => b.Atendimentos)
             .ThenInclude(a => a.Servicos)
         .FirstOrDefault(b => b.Id == barbeiroId);
 
     if (barbeiro == null)
-    {
         return NotFound();
+
+    // CORREÇÃO: busca clientes via SQL raw para evitar o bug de cast do TPT
+    foreach (var atendimento in barbeiro.Atendimentos)
+{
+    var conn = db.Database.GetDbConnection();
+    conn.Open();
+
+    using var cmd = conn.CreateCommand();
+    cmd.CommandText = $"SELECT p.Id, p.Nome, p.Email, p.Senha, p.Telefone FROM Pessoa p INNER JOIN Cliente c ON c.Id = p.Id WHERE p.Id = {atendimento.ClienteId}";
+
+    using var reader = cmd.ExecuteReader();
+    if (reader.Read())
+    {
+        atendimento.Cliente = new Cliente
+        {
+            Id       = reader.GetInt32(0),
+            Nome     = reader.GetString(1),
+            Email    = reader.GetString(2),
+            Senha    = reader.GetString(3),
+            Telefone = reader.IsDBNull(4) ? "Sem telefone" : reader.GetString(4)
+        };
     }
 
-    // Geração dos horários
+    conn.Close();
+}
+
+    // Filtra atendimentos pelo dia selecionado
+    barbeiro.Atendimentos = barbeiro.Atendimentos
+        .Where(a => a.DataHora.Date == diaSelecionado)
+        .ToList();
+
     var horarios = new List<DateTime>();
 
-    // manhã
-    var inicioManha = hoje.AddHours(8);
-    var fimManha = hoje.AddHours(12);
-
-    // tarde
-    var inicioTarde = hoje.AddHours(13);
-    var fimTarde = hoje.AddHours(19);
+    var inicioManha = diaSelecionado.AddHours(8);
+    var fimManha    = diaSelecionado.AddHours(12);
+    var inicioTarde = diaSelecionado.AddHours(13);
+    var fimTarde    = diaSelecionado.AddHours(19);
 
     for (var h = inicioManha; h < fimManha; h = h.AddMinutes(40))
-    {
         horarios.Add(h);
-    }
 
     for (var h = inicioTarde; h < fimTarde; h = h.AddMinutes(40))
-    {
         horarios.Add(h);
-    }
 
     ViewBag.Horarios = horarios;
+    ViewBag.DiaSelecionado = diaSelecionado.ToString("yyyy-MM-dd");
 
     return View(barbeiro);
 }

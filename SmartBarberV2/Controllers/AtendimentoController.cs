@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using System;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 public class AtendimentoController : Controller
@@ -11,87 +11,107 @@ public class AtendimentoController : Controller
         this.db = db;
     }
 
-    // GET: Atendimento
     public ActionResult Atendimentos()
     {
-        var atendimentos = db.Atendimento.ToList();
+        var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+
+        if (usuarioId == null)
+            return RedirectToAction("Login", "Pessoa");
+
+        // Busca apenas os atendimentos do cliente logado
+        var atendimentos = db.Atendimento
+            .Include(a => a.Servicos)
+            .Where(a => a.ClienteId == usuarioId)
+            .ToList();
+
+        // Busca o barbeiro de cada atendimento via SQL raw (evita bug TPT)
+        foreach (var atendimento in atendimentos)
+        {
+            var conn = db.Database.GetDbConnection();
+            conn.Open();
+
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = $@"
+                SELECT p.Id, p.Nome, b.Logradouro, b.Nr_Logradouro, b.Bairro
+                FROM Pessoa p
+                INNER JOIN Barbeiro b ON b.Id = p.Id
+                WHERE p.Id = {atendimento.BarbeiroId}";
+
+            using var reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                atendimento.Barbeiro = new Barbeiro
+                {
+                    Id = reader.GetInt32(0),
+                    Nome = reader.GetString(1),
+                    Logradouro = reader.GetString(2),
+                    Nr_Logradouro = reader.GetInt32(3),
+                    Bairro = reader.GetString(4)
+                };
+            }
+
+            conn.Close();
+        }
+
         return View(atendimentos);
     }
 
-    // GET: Atendimento/Details/5
-    public ActionResult Details(int id)
+    // GET: Editar dia e hora do atendimento
+    public ActionResult Editar(int id)
     {
-        var atendimento = db.Atendimento.FirstOrDefault(a => a.Id == id);
+        var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+
+        if (usuarioId == null)
+            return RedirectToAction("Login", "Pessoa");
+
+        var atendimento = db.Atendimento
+            .FirstOrDefault(a => a.Id == id && a.ClienteId == usuarioId);
+
         if (atendimento == null)
             return NotFound();
 
         return View(atendimento);
     }
 
-    // GET: Atendimento/Create
-    public ActionResult Create()
-    {
-        return View();
-    }
-
-    // POST: Atendimento/Create
+    // POST: Salvar nova data/hora
     [HttpPost]
-    public ActionResult Create(Atendimento atendimento)
+    public ActionResult Editar(int id, DateTime novaDataHora)
     {
-        if (!ModelState.IsValid)
-            return View(atendimento);
+        var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
 
-        db.Atendimento.Add(atendimento);
+        if (usuarioId == null)
+            return RedirectToAction("Login", "Pessoa");
+
+        var atendimento = db.Atendimento
+            .FirstOrDefault(a => a.Id == id && a.ClienteId == usuarioId);
+
+        if (atendimento == null)
+            return NotFound();
+
+        atendimento.DataHora = novaDataHora;
         db.SaveChanges();
-        return RedirectToAction("Index");
+
+        return RedirectToAction("Atendimentos");
     }
 
-    // GET: Atendimento/Edit/5
-    public ActionResult Edit(int id)
+    // POST: Excluir atendimento
+    [HttpPost, ActionName("Excluir")]
+    public ActionResult Excluir(int id)
     {
-        var atendimento = db.Atendimento.FirstOrDefault(a => a.Id == id);
-        if (atendimento == null)
-            return NotFound();
+        var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
 
-        return View(atendimento);
-    }
+        if (usuarioId == null)
+            return RedirectToAction("Login", "Pessoa");
 
-    // POST: Atendimento/Edit/5
-    [HttpPost]
-    public ActionResult Edit(int id, Atendimento atendimento)
-    {
-        if (id != atendimento.Id)
-            return NotFound();
+        var atendimento = db.Atendimento
+            .FirstOrDefault(a => a.Id == id && a.ClienteId == usuarioId);
 
-        if (!ModelState.IsValid)
-            return View(atendimento);
-
-        db.Atendimento.Update(atendimento);
-        db.SaveChanges();
-        return RedirectToAction("Index");
-    }
-
-    // GET: Atendimento/Delete/5
-    public ActionResult Delete(int id)
-    {
-        var atendimento = db.Atendimento.FirstOrDefault(a => a.Id == id);
-        if (atendimento == null)
-            return NotFound();
-
-        return View(atendimento);
-    }
-
-    // POST: Atendimento/Delete/5
-    [HttpPost]
-    public ActionResult DeleteConfirmed(int id)
-    {
-        var atendimento = db.Atendimento.FirstOrDefault(a => a.Id == id);
         if (atendimento != null)
         {
             db.Atendimento.Remove(atendimento);
             db.SaveChanges();
         }
 
-        return RedirectToAction("Index");
+        return RedirectToAction("Atendimentos");
     }
 }
