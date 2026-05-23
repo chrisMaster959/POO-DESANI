@@ -1,5 +1,9 @@
 @model List<Servico>
 
+@{
+    var servicosMarcados = ViewBag.ServicosDoBarbreiroIds as List<int> ?? new List<int>();
+}
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -7,9 +11,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Selecionar Serviços</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <style>
             body {
                 background-color: #f5f7fa;
@@ -67,14 +69,11 @@
 </head>
 
 <body>
-
     <div class="container-servicos">
 
         <div class="titulo">
             <h2>Selecionar Serviços</h2>
-            <p class="text-muted">
-                Escolha os serviços que você realiza na barbearia
-            </p>
+            <p class="text-muted">Escolha os serviços que você realiza na barbearia</p>
         </div>
 
         <form action="/servico/salvarservicosbarbeiro" method="post">
@@ -82,59 +81,36 @@
             @foreach (var servico in Model)
             {
                 <div class="card-servico">
-
                     <div class="servico-info">
-
                         <div>
-                            <div class="nome-servico">
-                                @servico.Nome
-                            </div>
-
-                            <div class="text-muted">
-                                Código: @servico.Codigo
-                            </div>
+                            <div class="nome-servico">@servico.Nome</div>
+                            <div class="text-muted">Código: @servico.Codigo</div>
                         </div>
-
                         <div class="text-end">
-
-                            <div class="preco-servico">
-                                R$ @servico.Preco.ToString("F2")
-                            </div>
-
+                            <div class="preco-servico">R$ @servico.Preco.ToString("F2")</div>
                             <div class="form-check mt-2">
+
+                                @* CORREÇÃO: checked se o barbeiro já possui este serviço *@
                                 <input class="form-check-input" type="checkbox" name="servicosIds" value="@servico.Id"
-                                       id="servico_@servico.Id">
+                                       id="servico_@servico.Id" @(servicosMarcados.Contains(servico.Id) ? "checked" : "") />
 
                                 <label class="form-check-label" for="servico_@servico.Id">
                                     Selecionar
                                 </label>
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
             }
 
             <div class="btns">
-
-                <a href="/barbeiro/controle" class="btn btn-secondary">
-                    Voltar
-                </a>
-
-                <button type="submit" class="btn btn-success">
-                    Salvar Serviços
-                </button>
-
+                <a href="/barbeiro/controle" class="btn btn-secondary">Voltar</a>
+                <button type="submit" class="btn btn-success">Salvar Serviços</button>
             </div>
 
         </form>
 
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 
 </html>

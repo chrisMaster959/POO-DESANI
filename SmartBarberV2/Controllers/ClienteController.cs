@@ -32,6 +32,7 @@ public class ClienteController : Controller
             .ToList();
 
         ViewBag.ServicoNome = servico.Nome;
+        ViewBag.ServicoId = id; // CORREÇÃO: passa o id do serviço para a view
 
         return View("BarbeirosDisponiveis", barbeirosDisponiveis);
     }
@@ -75,6 +76,8 @@ public class ClienteController : Controller
     [HttpPost]
     public IActionResult Agendar(int barbeiroId, DateTime horario, int servicoId)
     {
+        System.Console.WriteLine($">>> barbeiroId: {barbeiroId}, servicoId: {servicoId}, horario: {horario}");
+
         var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
 
         if (usuarioId == null)
@@ -88,7 +91,6 @@ public class ClienteController : Controller
             Status = "Agendado"
         };
 
-        // Vincula o serviço escolhido ao atendimento
         if (servicoId > 0)
         {
             var servico = db.Servico.FirstOrDefault(s => s.Id == servicoId);
@@ -99,6 +101,6 @@ public class ClienteController : Controller
         db.Atendimento.Add(atendimento);
         db.SaveChanges();
 
-        return RedirectToAction("Login", "Pessoa");
+        return RedirectToAction("Atendimentos", "Atendimento");
     }
 }

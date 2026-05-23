@@ -1,5 +1,11 @@
 @model Atendimento
 
+@{
+    var horarios = ViewBag.Horarios as List<DateTime>;
+    var diaSelecionado = ViewBag.DiaSelecionado as string;
+    var atendimentoId = ViewBag.AtendimentoId;
+}
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -8,40 +14,73 @@
   <title>Editar Atendimento</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body { background-color: #f5f5f5; }
-    .div-form { min-height: 100vh; display: flex; justify-content: center; align-items: center; }
-    form {
-      width: 100%;
-      max-width: 450px;
-      background-color: white;
-      padding: 2rem;
-      border-radius: 1rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,.1);
+    body { background-color: #f5f5f5; padding: 2rem 1rem; }
+    .container { max-width: 700px; margin: 0 auto; }
+    .horario-card {
+        background: white;
+        border-left: 5px solid purple;
+        border-radius: 8px;
+        padding: 15px 20px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
+    .horario-atual {
+        border-left: 5px solid #ffc107;
+    }
+    .horario-texto { font-size: 1.3rem; font-weight: bold; }
   </style>
 </head>
 <body>
-<div class="div-form">
-  <form method="post" action="/Atendimento/Editar/@Model.Id">
-    <h3 class="mb-4">Editar Horário</h3>
+<div class="container">
 
-    <p class="text-muted">Atendimento #@Model.Id</p>
-
-    <div class="mb-3">
-      <label class="form-label">Nova data e hora</label>
-      <input
-        type="datetime-local"
-        class="form-control"
-        name="novaDataHora"
-        value="@Model.DataHora.ToString("yyyy-MM-ddTHH:mm")"
-        required />
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Editar Horário</h1>
+        <a href="/Atendimento/Atendimentos" class="btn btn-secondary">← Voltar</a>
     </div>
 
-    <div class="d-flex gap-2">
-      <button type="submit" class="btn btn-success w-100">Salvar</button>
-      <a href="/Atendimento/Atendimentos" class="btn btn-secondary w-100">Cancelar</a>
-    </div>
-  </form>
+    <p class="text-muted">Atendimento #@Model.Id — horário atual: <strong>@Model.DataHora.ToString("dd/MM/yyyy HH:mm")</strong></p>
+
+    @* Seletor de dia *@
+    <form method="get" action="/Atendimento/Editar/@Model.Id" class="mb-4 d-flex gap-2 align-items-end">
+        <div>
+            <label class="form-label">Escolha o dia</label>
+            <input type="date" class="form-control" name="dia"
+                   value="@diaSelecionado"
+                   min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+        </div>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+
+    @if (horarios == null || !horarios.Any())
+    {
+        <p class="text-muted">Nenhum horário disponível para este dia.</p>
+    }
+    else
+    {
+        @foreach (var horario in horarios)
+        {
+            var isAtual = horario == Model.DataHora;
+
+            <div class="horario-card @(isAtual ? "horario-atual" : "")">
+                <span class="horario-texto">
+                    @horario.ToString("HH:mm")
+                    @if (isAtual)
+                    {
+                        <small class="text-warning ms-2">(atual)</small>
+                    }
+                </span>
+
+                <form method="post" action="/Atendimento/Editar/@Model.Id">
+                    <input type="hidden" name="novaDataHora" value="@horario.ToString("yyyy-MM-ddTHH:mm:ss")" />
+                    <button type="submit" class="btn btn-success btn-sm">Selecionar</button>
+                </form>
+            </div>
+        }
+    }
+
 </div>
 </body>
 </html>

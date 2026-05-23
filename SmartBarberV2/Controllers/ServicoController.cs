@@ -21,11 +21,29 @@ public class ServicoController : Controller
     // GET
     // abre a tela Escolha.cshtml
     public ActionResult Escolha()
-    {
-        var servicos = db.Servico.ToList();
+{
+    var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
 
-        return View(servicos);
+    var servicos = db.Servico.ToList();
+
+    // Busca os ids dos serviços que o barbeiro já possui
+    if (usuarioId != null)
+    {
+        var barbeiro = db.Barbeiro
+            .Include(b => b.Servicos)
+            .FirstOrDefault(b => b.Id == usuarioId);
+
+        var servicosDoBarbreiroIds = barbeiro?.Servicos?.Select(s => s.Id).ToList() ?? new List<int>();
+
+        ViewBag.ServicosDoBarbreiroIds = servicosDoBarbreiroIds;
     }
+    else
+    {
+        ViewBag.ServicosDoBarbreiroIds = new List<int>();
+    }
+
+    return View(servicos);
+}
 
     // POST
     [HttpPost]

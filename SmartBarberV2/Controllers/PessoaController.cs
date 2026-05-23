@@ -146,4 +146,11 @@ public class PessoaController : Controller
 
         return RedirectToAction("Escolha", "Servico");
     }
+
+    [HttpPost]
+    public ActionResult Sair()
+    {
+        HttpContext.Session.Clear();
+        return RedirectToAction("Login", "Pessoa");
+    }
 }
