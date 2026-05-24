@@ -5,47 +5,57 @@
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Cadastro</title>
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
     }
 
-    .div-form {
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      height: 100vh;
-      width: 100%;
-      background-color: aliceblue;
-
-      & form {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-
-      height: 40%;
-      width: 20%;
-      background-color: antiquewhite;
-      border-radius: 1.5rem;
-
-        & btns {
-          display: flex;
-          gap: .5rem;
-        }
-      }
+    body{
+      background-color:aliceblue;
     }
+
+    .div-form{
+      min-height:100vh;
+
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+
+    form{
+      width:100%;
+      max-width:520px;
+
+      background-color:antiquewhite;
+
+      padding:2rem;
+
+      border-radius:1.5rem;
+
+      display:flex;
+      flex-direction:column;
+    }
+
+    .btns{
+      display:flex;
+      flex-direction:column;
+      gap:.8rem;
+      margin-top:1rem;
+    }
+
   </style>
 </head>
 <body>
   <div class="div-form">
-    <form action="/pessoa/cadastro" method="post">
+    <form action="/Pessoa/Cadastro" method="post">
+      <h2 class="mb-4 text-center">
+        Cadastro
+      </h2>
       <div class="mb-3">
         <label for="inputNome" class="form-label">Nome</label>
         <input type="text" class="form-control" id="inputNome" name="Nome" required>
@@ -63,7 +73,7 @@
         <input type="tel" class="form-control" id="inputTelefone" name="Telefone">
       </div>
       <div class="btns">
-        <button type="submit" class="btn btn-light">Criar conta</button>
+        <button type="submit" class="btn btn-primary">Criar conta</button>
       </div>
     </form>
   </div>
