@@ -11,6 +11,7 @@ public class AtendimentoController : Controller
         this.db = db;
     }
 
+    // LISTAR ATENDIMENTOS DO CLIENTE
     public ActionResult Atendimentos()
     {
         var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
@@ -24,20 +25,27 @@ public class AtendimentoController : Controller
             .Where(a => a.ClienteId == usuarioId)
             .ToList();
 
-        // Busca o barbeiro de cada atendimento via SQL raw (evita bug TPT)
+        // Busca barbeiro manualmente
         foreach (var atendimento in atendimentos)
         {
             var conn = db.Database.GetDbConnection();
             conn.Open();
 
             using var cmd = conn.CreateCommand();
+
             cmd.CommandText = $@"
-                SELECT p.Id, p.Nome, b.Logradouro, b.Nr_Logradouro, b.Bairro
+                SELECT 
+                    p.Id,
+                    p.Nome,
+                    b.Logradouro,
+                    b.Nr_Logradouro,
+                    b.Bairro
                 FROM Pessoa p
                 INNER JOIN Barbeiro b ON b.Id = p.Id
                 WHERE p.Id = {atendimento.BarbeiroId}";
 
             using var reader = cmd.ExecuteReader();
+
             if (reader.Read())
             {
                 atendimento.Barbeiro = new Barbeiro
@@ -56,84 +64,122 @@ public class AtendimentoController : Controller
         return View(atendimentos);
     }
 
-    // GET: Editar dia e hora do atendimento
-    // GET: /Atendimento/Editar/5
-[HttpGet, Route("Atendimento/Editar/{id}")]
-public ActionResult Editar(int id, DateTime? dia)
-{
-    var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+    // GET: EDITAR ATENDIMENTO
+    [HttpGet]
+    [Route("Atendimento/Editar/{id}")]
+    public ActionResult Editar(int id, DateTime? dia)
+    {
+        var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
 
-    if (usuarioId == null)
-        return RedirectToAction("Login", "Pessoa");
+        if (usuarioId == null)
+            return RedirectToAction("Login", "Pessoa");
 
-    var atendimento = db.Atendimento
-        .FirstOrDefault(a => a.Id == id && a.ClienteId == usuarioId);
+        var atendimento = db.Atendimento
+            .FirstOrDefault(a => a.Id == id && a.ClienteId == usuarioId);
 
-    if (atendimento == null)
-        return NotFound();
+        if (atendimento == null)
+            return NotFound();
 
-    // Usa o dia passado ou o dia do atendimento atual como padrão
-    var diaSelecionado = dia?.Date ?? atendimento.DataHora.Date;
-    var horarios = GerarHorariosDisponiveis(atendimento.BarbeiroId, diaSelecionado, id);
+        // Usa o dia selecionado ou o dia do atendimento atual
+        var diaSelecionado = dia?.Date ?? atendimento.DataHora.Date;
 
-    ViewBag.Horarios = horarios;
-    ViewBag.DiaSelecionado = diaSelecionado.ToString("yyyy-MM-dd");
-    ViewBag.AtendimentoId = id;
+        // Gera horários disponíveis
+        var horarios = GerarHorariosDisponiveis(
+            atendimento.BarbeiroId,
+            diaSelecionado,
+            id
+        );
 
-    return View(atendimento);
-}
+        ViewBag.Horarios = horarios;
+        ViewBag.DiaSelecionado = diaSelecionado.ToString("yyyy-MM-dd");
+        ViewBag.AtendimentoId = id;
 
-[HttpPost, Route("Atendimento/Editar/{id}")]
-public ActionResult Editar(int id, DateTime novaDataHora)
-{
-    var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+        return View(atendimento);
+    }
 
-    if (usuarioId == null)
-        return RedirectToAction("Login", "Pessoa");
+    // POST: SALVAR NOVA DATA/HORA
+    [HttpPost]
+    [Route("Atendimento/Editar/{id}")]
+    public ActionResult Editar(int id, DateTime novaDataHora)
+    {
+        var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
 
-    var atendimento = db.Atendimento
-        .FirstOrDefault(a => a.Id == id && a.ClienteId == usuarioId);
+        if (usuarioId == null)
+            return RedirectToAction("Login", "Pessoa");
 
-    if (atendimento == null)
-        return NotFound();
+        var atendimento = db.Atendimento
+            .FirstOrDefault(a => a.Id == id && a.ClienteId == usuarioId);
 
-    atendimento.DataHora = novaDataHora;
-    db.SaveChanges();
+        if (atendimento == null)
+            return NotFound();
 
-    return RedirectToAction("Atendimentos");
-}
+        atendimento.DataHora = novaDataHora;
 
-// Método auxiliar para gerar horários disponíveis
-private List<DateTime> GerarHorariosDisponiveis(int barbeiroId, DateTime dia, int atendimentoIdIgnorar)
-{
-    var horarios = new List<DateTime>();
+        db.SaveChanges();
 
-    var inicioManha = dia.AddHours(8);
-    var fimManha    = dia.AddHours(12);
-    var inicioTarde = dia.AddHours(13);
-    var fimTarde    = dia.AddHours(19);
+        return RedirectToAction("Atendimentos");
+    }
 
-    for (var h = inicioManha; h < fimManha; h = h.AddMinutes(40))
-        horarios.Add(h);
+    // GERAR HORÁRIOS DISPONÍVEIS
+    private List<DateTime> GerarHorariosDisponiveis(
+        int barbeiroId,
+        DateTime dia,
+        int atendimentoIdIgnorar)
+    {
+        var horarios = new List<DateTime>();
 
-    for (var h = inicioTarde; h < fimTarde; h = h.AddMinutes(40))
-        horarios.Add(h);
+        // HORÁRIOS DA MANHÃ
+        var inicioManha = dia.AddHours(8);
+        var fimManha = dia.AddHours(12);
 
-    // Busca horários ocupados, ignorando o atendimento atual (que está sendo editado)
-    var agendados = db.Atendimento
-        .Where(a =>
-            a.BarbeiroId == barbeiroId &&
-            a.Id != atendimentoIdIgnorar &&
-            a.DataHora >= dia &&
-            a.DataHora < dia.AddDays(1))
-        .Select(a => a.DataHora)
-        .ToList();
+        // HORÁRIOS DA TARDE
+        var inicioTarde = dia.AddHours(13);
+        var fimTarde = dia.AddHours(19);
 
-    return horarios.Where(h => !agendados.Contains(h)).ToList();
-}
+        // Gera manhã
+        for (var h = inicioManha; h < fimManha; h = h.AddMinutes(40))
+        {
+            horarios.Add(h);
+        }
 
-    // POST: Excluir atendimento
-    [HttpPost, ActionName("Excluir")]
+        // Gera tarde
+        for (var h = inicioTarde; h < fimTarde; h = h.AddMinutes(40))
+        {
+            horarios.Add(h);
+        }
+
+        // Busca horários já ocupados
+        var agendados = db.Atendimento
+            .Where(a =>
+                a.BarbeiroId == barbeiroId &&
+                a.Id != atendimentoIdIgnorar &&
+                a.DataHora >= dia &&
+                a.DataHora < dia.AddDays(1))
+            .Select(a => a.DataHora)
+            .ToList();
+
+        // Hora atual
+        var agora = DateTime.Now;
+
+        // Filtra:
+        // 1. horários ocupados
+        // 2. horários passados do dia atual
+        var horariosDisponiveis = horarios
+            .Where(h =>
+                !agendados.Contains(h) &&
+                (
+                    dia.Date > agora.Date ||
+                    h > agora.AddMinutes(30)
+                )
+            )
+            .ToList();
+
+        return horariosDisponiveis;
+    }
+
+    // EXCLUIR ATENDIMENTO
+    [HttpPost]
+    [ActionName("Excluir")]
     public ActionResult Excluir(int id)
     {
         var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
