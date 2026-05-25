@@ -171,9 +171,4 @@ public class BarbeiroController : Controller
 
         return View(barbeiro);
     }
-
-    public ActionResult Relatorio()
-    {
-        return View();
-    }
 }
