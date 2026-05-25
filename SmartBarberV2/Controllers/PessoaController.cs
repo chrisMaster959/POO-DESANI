@@ -10,9 +10,7 @@ public class PessoaController : Controller
         this.db = db;
     }
 
-    // =========================
     // LOGIN CLIENTE
-    // =========================
 
     [HttpGet]
     public ActionResult Login()
@@ -44,9 +42,7 @@ public class PessoaController : Controller
         return RedirectToAction("Atendimentos", "Atendimento");
     }
 
-    // =========================
     // LOGIN BARBEIRO
-    // =========================
 
     [HttpGet]
     public ActionResult LoginBarbeiro()
@@ -89,9 +85,7 @@ public class PessoaController : Controller
         return RedirectToAction("Controle", "Barbeiro");
     }
 
-    // =========================
     // CADASTRO CLIENTE
-    // =========================
 
     [HttpGet]
     public ActionResult Cadastro()
@@ -114,9 +108,7 @@ public class PessoaController : Controller
         return RedirectToAction("Login");
     }
 
-    // =========================
     // CADASTRO BARBEIRO
-    // =========================
 
     [HttpGet]
     public ActionResult CadastroBarbeiro()

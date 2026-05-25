@@ -19,7 +19,7 @@ public class BarbeiroController : Controller
     }
 
     [HttpPost]
-    public IActionResult Cadastro(Barbeiro barbeiroForm)
+    public ActionResult Cadastro(Barbeiro barbeiroForm)
     {
         var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
 

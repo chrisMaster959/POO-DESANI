@@ -100,7 +100,7 @@ public class ClienteController : Controller
 
     // CONFIRMAR AGENDAMENTO
     [HttpPost]
-    public IActionResult Agendar(int barbeiroId, DateTime horario, int servicoId)
+    public ActionResult Agendar(int barbeiroId, DateTime horario, int servicoId)
     {
         var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
 
