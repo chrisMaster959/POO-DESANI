@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SmartBarberV2.Filters;
 
+[Autenticacao]
 public class BarbeiroController : Controller
 {
     private readonly DatabaseContext db;

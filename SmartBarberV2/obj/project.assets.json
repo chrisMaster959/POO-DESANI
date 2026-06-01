@@ -3053,19 +3053,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\jlral\\.nuget\\packages\\": {}
+    "C:\\Users\\chgon\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jlral\\Documents\\FATEC\\4º semestre\\POO-DESANI\\SmartBarberV2\\SmartBarber.csproj",
+      "projectUniqueName": "c:\\Users\\chgon\\Desktop\\projeto desani\\POO-DESANI\\SmartBarberV2\\SmartBarber.csproj",
       "projectName": "SmartBarber",
-      "projectPath": "C:\\Users\\jlral\\Documents\\FATEC\\4º semestre\\POO-DESANI\\SmartBarberV2\\SmartBarber.csproj",
-      "packagesPath": "C:\\Users\\jlral\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jlral\\Documents\\FATEC\\4º semestre\\POO-DESANI\\SmartBarberV2\\obj\\",
+      "projectPath": "c:\\Users\\chgon\\Desktop\\projeto desani\\POO-DESANI\\SmartBarberV2\\SmartBarber.csproj",
+      "packagesPath": "C:\\Users\\chgon\\.nuget\\packages\\",
+      "outputPath": "c:\\Users\\chgon\\Desktop\\projeto desani\\POO-DESANI\\SmartBarberV2\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\jlral\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\chgon\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
@@ -3089,7 +3089,7 @@
         "auditLevel": "low",
         "auditMode": "all"
       },
-      "SdkAnalysisLevel": "10.0.200"
+      "SdkAnalysisLevel": "10.0.100"
     },
     "frameworks": {
       "net10.0": {
@@ -3127,7 +3127,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.108/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.AspNetCore": "(,10.0.32767]",
           "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

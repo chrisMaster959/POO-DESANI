@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using SmartBarberV2.Filters;
 
+[Autenticacao]
 public class AtendimentoController : Controller
 {
     private readonly DatabaseContext db;
