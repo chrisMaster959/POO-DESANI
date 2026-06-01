@@ -43,6 +43,28 @@
       </form>
     </div>
 
+    <div class="mb-4">
+      <form method="get" action="/Atendimento/Atendimentos">
+        <div class="row">
+          <div class="col-md-4">
+            <select name="filtro" class="form-select" onchange="this.form.submit()">
+              <option value="atuais" selected="@(ViewBag.Filtro == "atuais")">
+                Atendimentos Atuais
+              </option>
+
+              <option value="anteriores" selected="@(ViewBag.Filtro == "anteriores")">
+                Atendimentos Anteriores
+              </option>
+
+              <option value="todos" selected="@(ViewBag.Filtro == "todos")">
+                Todos os Atendimentos
+              </option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </div>
+
     @if (Model != null && Model.Any())
     {
       @foreach (var atendimento in Model)
