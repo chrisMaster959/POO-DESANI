@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using SmartBarberV2.Filters;
 
+[Autenticacao]
 public class AtendimentoController : Controller
 {
     private readonly DatabaseContext db;
@@ -12,56 +14,83 @@ public class AtendimentoController : Controller
     }
 
     // LISTAR ATENDIMENTOS DO CLIENTE
-    public ActionResult Atendimentos()
+    public ActionResult Atendimentos(string filtro = "atuais")
     {
-        var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+    var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
 
-        if (usuarioId == null)
-            return RedirectToAction("Login", "Pessoa");
+    if (usuarioId == null)
+        return RedirectToAction("Login", "Pessoa");
 
-        // Busca apenas os atendimentos do cliente logado
-        var atendimentos = db.Atendimento
-            .Include(a => a.Servicos)
-            .Where(a => a.ClienteId == usuarioId)
+    // Busca apenas os atendimentos do cliente logado
+    var atendimentos = db.Atendimento
+        .Include(a => a.Servicos)
+        .Where(a => a.ClienteId == usuarioId)
+        .ToList();
+
+    // Filtro
+    if (filtro == "anteriores")
+    {
+        atendimentos = atendimentos
+            .Where(a => a.DataHora < DateTime.Today)
+            .OrderByDescending(a => a.DataHora)
             .ToList();
+    }
+    else if (filtro == "todos")
+    {
+        atendimentos = atendimentos
+            .OrderBy(a => a.DataHora)
+            .ToList();
+    }
+    else
+    {
+        // padrão = atuais
+        atendimentos = atendimentos
+            .Where(a => a.DataHora >= DateTime.Today)
+            .OrderBy(a => a.DataHora)
+            .ToList();
+    }
 
-        // Busca barbeiro manualmente
-        foreach (var atendimento in atendimentos)
+    ViewBag.Filtro = filtro;
+
+    // Busca barbeiro manualmente
+    foreach (var atendimento in atendimentos)
+    {
+        var conn = db.Database.GetDbConnection();
+        conn.Open();
+
+        using var cmd = conn.CreateCommand();
+
+        cmd.CommandText = $@"
+            SELECT 
+                p.Id,
+                p.Nome,
+                b.Logradouro,
+                b.Nr_Logradouro,
+                b.Bairro
+            FROM Pessoa p
+            INNER JOIN Barbeiro b ON b.Id = p.Id
+            WHERE p.Id = {atendimento.BarbeiroId}";
+
+        using var reader = cmd.ExecuteReader();
+
+        if (reader.Read())
         {
-            var conn = db.Database.GetDbConnection();
-            conn.Open();
-
-            using var cmd = conn.CreateCommand();
-
-            cmd.CommandText = $@"
-                SELECT 
-                    p.Id,
-                    p.Nome,
-                    b.Logradouro,
-                    b.Nr_Logradouro,
-                    b.Bairro
-                FROM Pessoa p
-                INNER JOIN Barbeiro b ON b.Id = p.Id
-                WHERE p.Id = {atendimento.BarbeiroId}";
-
-            using var reader = cmd.ExecuteReader();
-
-            if (reader.Read())
+            atendimento.Barbeiro = new Barbeiro
             {
-                atendimento.Barbeiro = new Barbeiro
-                {
-                    Id = reader.GetInt32(0),
-                    Nome = reader.GetString(1),
-                    Logradouro = reader.GetString(2),
-                    Nr_Logradouro = reader.GetInt32(3),
-                    Bairro = reader.GetString(4)
-                };
-            }
-
-            conn.Close();
+                Id = reader.GetInt32(0),
+                Nome = reader.GetString(1),
+                Logradouro = reader.GetString(2),
+                Nr_Logradouro = reader.GetInt32(3),
+                Bairro = reader.GetString(4)
+            };
         }
 
-        return View(atendimentos);
+        conn.Close();
+    }
+
+    ViewBag.EhBarbeiro = db.Barbeiro.Any(b => b.Id == usuarioId);
+
+    return View(atendimentos);
     }
 
     // GET: EDITAR ATENDIMENTO

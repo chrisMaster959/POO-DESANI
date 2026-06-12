@@ -2,37 +2,106 @@
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Meus Atendimentos</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body { background-color: #f5f5f5; padding: 2rem 1rem; }
-    .container { max-width: 900px; margin: 0 auto; }
-    .atendimento-card {
-      background-color: white;
-      border-left: 5px solid #6f42c1;
-      border-radius: 0.5rem;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
-    }
-    .atendimento-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
-    .atendimento-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-    .atendimento-data { font-size: 1.1rem; font-weight: bold; color: #333; }
-    .status-badge { padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.85rem; font-weight: bold; }
-    .status-agendado { background-color: #d4edda; color: #155724; }
-    .status-pendente { background-color: #fff3cd; color: #856404; }
-    .status-cancelado { background-color: #f8d7da; color: #721c24; }
-    .atendimento-details { color: #666; line-height: 1.8; }
-    .atendimento-servicos { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee; }
-    .servico-item { background-color: #f9f9f9; padding: 0.5rem 1rem; margin: 0.5rem 0; border-radius: 0.3rem; font-size: 0.95rem; }
-    .empty-state { text-align: center; padding: 3rem 1rem; color: #999; }
-    .btn-acoes { display: flex; gap: 0.5rem; margin-top: 1rem; }
+      body {
+        background-color: #f5f5f5;
+        padding: 2rem 1rem;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .atendimento-card {
+        background-color: white;
+        border-left: 5px solid #6f42c1;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+      }
+
+      .atendimento-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      .atendimento-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+
+      .atendimento-data {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.85rem;
+        font-weight: bold;
+      }
+
+      .status-agendado {
+        background-color: #d4edda;
+        color: #155724;
+      }
+
+      .status-pendente {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+
+      .status-cancelado {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+
+      .atendimento-details {
+        color: #666;
+        line-height: 1.8;
+      }
+
+      .atendimento-servicos {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+      }
+
+      .servico-item {
+        background-color: #f9f9f9;
+        padding: 0.5rem 1rem;
+        margin: 0.5rem 0;
+        border-radius: 0.3rem;
+        font-size: 0.95rem;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #999;
+      }
+
+      .btn-acoes {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
   </style>
 </head>
+
 <body>
   <div class="container">
 
@@ -40,6 +109,28 @@
       <h1 class="mb-0">Meus Atendimentos</h1>
       <form method="post" action="/Pessoa/Sair">
         <button type="submit" class="btn btn-outline-danger">Sair</button>
+      </form>
+    </div>
+
+    <div class="mb-4">
+      <form method="get" action="/Atendimento/Atendimentos">
+        <div class="row">
+          <div class="col-md-4">
+            <select name="filtro" class="form-select" onchange="this.form.submit()">
+              <option value="atuais" selected="@(ViewBag.Filtro == "atuais")">
+                Atendimentos Atuais
+              </option>
+
+              <option value="anteriores" selected="@(ViewBag.Filtro == "anteriores")">
+                Atendimentos Anteriores
+              </option>
+
+              <option value="todos" selected="@(ViewBag.Filtro == "todos")">
+                Todos os Atendimentos
+              </option>
+            </select>
+          </div>
+        </div>
       </form>
     </div>
 
@@ -61,7 +152,8 @@
             <p><strong>Barbeiro:</strong> @(atendimento.Barbeiro?.Nome ?? "Não atribuído")</p>
             <p>
               <strong>Localização:</strong>
-              @(atendimento.Barbeiro?.Logradouro ?? ""), @(atendimento.Barbeiro?.Nr_Logradouro) - @(atendimento.Barbeiro?.Bairro ?? "")
+              @(atendimento.Barbeiro?.Logradouro ?? ""), @(atendimento.Barbeiro?.Nr_Logradouro) -
+              @(atendimento.Barbeiro?.Bairro ?? "")
             </p>
 
             @if (atendimento.Servicos != null && atendimento.Servicos.Any())
@@ -98,13 +190,26 @@
       </div>
     }
 
-    <div class="text-center mt-4" style="display: flex; flex-direction: column">
-      <a href="/Servico/Servicos" class="btn btn-primary btn-lg">Novo Atendimento</a>
-      <a href="/Barbeiro/Cadastro">
-                Sou Barbeiro
-            </a>
+    <div class="text-center mt-4">
+      <a href="/Servico/Servicos" class="btn btn-primary btn-lg">
+        Novo Atendimento
+      </a>
+
+      @if (ViewBag.EhBarbeiro == true)
+      {
+        <a href="/Barbeiro/Controle" class="btn btn-success btn-lg ms-2">
+          Entrar como Barbeiro
+        </a>
+      }
+      else
+      {
+        <a href="/Barbeiro/Cadastro" class="btn btn-success btn-lg ms-2">
+          Tornar-se Barbeiro
+        </a>
+      }
     </div>
 
   </div>
 </body>
+
 </html>

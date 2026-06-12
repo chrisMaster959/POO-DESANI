@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SmartBarberV2.Filters;
 
+[Autenticacao]
 public class BarbeiroController : Controller
 {
     private readonly DatabaseContext db;
@@ -168,6 +170,8 @@ public class BarbeiroController : Controller
 
         ViewBag.Horarios = horarios;
         ViewBag.DiaSelecionado = diaSelecionado.ToString("yyyy-MM-dd");
+
+        ViewBag.EhCliente = db.Cliente.Any(c => c.Id == barbeiroId);
 
         return View(barbeiro);
     }

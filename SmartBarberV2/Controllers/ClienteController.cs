@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using SmartBarberV2.Filters;
 
+[Autenticacao]
 public class ClienteController : Controller
 {
     private readonly DatabaseContext db;
